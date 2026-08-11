@@ -41,25 +41,25 @@ Route::name('students.')->prefix('students')->group(function () {
 });
  
 Route::name('teachers.')->prefix('teachers')->group(function () {
- 
-    // Halaman Daftar Guru
+
+    // 1. Halaman Daftar Guru
     Route::get('/', [TeacherController::class, 'index'])->name('index');
- 
-    // Halaman Detail Guru
-    Route::get('/{id}', [TeacherController::class, 'show'])->name('show');
- 
-    // Halaman Tambah Guru
+
+    // 2. Halaman Tambah Guru (HARUS DI ATAS /{id})
     Route::get('/create', [TeacherController::class, 'create'])->name('create');
- 
-    // Halamann Edit Guru
+
+    // 3. Halaman Detail Guru
+    Route::get('/{id}', [TeacherController::class, 'show'])->name('show');
+
+    // 4. Halaman Edit Guru
     Route::get('/{id}/edit', [TeacherController::class, 'edit'])->name('edit');
- 
+
     // Logika Tambah Guru
     Route::post('/', [TeacherController::class, 'store'])->name('store');
- 
+
     // Logika Edit Guru
     Route::put('/{id}', [TeacherController::class, 'update'])->name('update');
- 
+
     // Logika Hapus Guru
     Route::delete('/{id}', [TeacherController::class, 'destroy'])->name('destroy');
 });
