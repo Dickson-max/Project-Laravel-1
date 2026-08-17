@@ -2,15 +2,34 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class EditController
+class EditController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    private array $classes = [
+        [
+            'id' => 1,
+            'name' => 'XII AKL 1',
+            'grade' => 'XII',
+            'major' => 'AKL',
+            'homeroom_teacher' => 'Budi Santoso'
+        ],
+        [
+            'id' => 2,
+            'name' => 'XII TKJ 1',
+            'grade' => 'XII',
+            'major' => 'TKJ',
+            'homeroom_teacher' => 'Siti Aminah'
+        ]
+    ];
+
+    public function __invoke(string $id)
     {
-         return "Menampilkan halaman edit kelas";
+        $class = collect($this->classes)->firstWhere('id', (int) $id) ?? $this->classes[0];
+
+        return view('classes.edit', [
+            'title' => 'Sistem Sekolah - Edit Kelas',
+            'class' => $class
+        ]);
     }
 }

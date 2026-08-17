@@ -2,15 +2,32 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class IndexController
+class IndexController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function __invoke()
     {
-         return "Ini adalah halaman daftar kelas";
+        $classes = [
+            [
+                'id' => 1,
+                'name' => 'XII AKL 1',
+                'grade' => 'XII',
+                'major' => 'AKL',
+                'homeroom_teacher' => 'Budi Santoso'
+            ],
+            [
+                'id' => 2,
+                'name' => 'XII TKJ 1',
+                'grade' => 'XII',
+                'major' => 'TKJ',
+                'homeroom_teacher' => 'Siti Aminah'
+            ]
+        ];
+
+        return view('classes.index', [
+            'title' => 'Sistem Sekolah - Daftar Kelas',
+            'classes' => $classes
+        ]);
     }
 }

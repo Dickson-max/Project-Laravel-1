@@ -2,15 +2,34 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ShowController
+class ShowController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request, string $id)
+    private array $classes = [
+        [
+            'id' => 1,
+            'name' => 'XII AKL 1',
+            'grade' => 'XII',
+            'major' => 'AKL',
+            'homeroom_teacher' => 'Budi Santoso'
+        ],
+        [
+            'id' => 2,
+            'name' => 'XII TKJ 1',
+            'grade' => 'XII',
+            'major' => 'TKJ',
+            'homeroom_teacher' => 'Siti Aminah'
+        ]
+    ];
+
+    public function __invoke(string $id)
     {
-        return "Menampilkan detail kelas dengan ID : {$id}";
+        $class = collect($this->classes)->firstWhere('id', (int) $id) ?? $this->classes[0];
+
+        return view('classes.show', [
+            'title' => 'Sistem Sekolah - Detail Kelas',
+            'class' => $class
+        ]);
     }
 }

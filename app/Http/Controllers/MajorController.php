@@ -6,59 +6,96 @@ use Illuminate\Http\Request;
 
 class MajorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private array $majors = [
+        [
+            'id' => 1,
+            'code' => 'AKL',
+            'name' => 'Akuntansi dan Keuangan Lembaga',
+            'description' => 'Program keahlian yang membekali murid dengan kompetensi pencatatan dan pelaporan keuangan.',
+        ],
+        [
+            'id' => 2,
+            'code' => 'TKJ',
+            'name' => 'Teknik Komputer dan Jaringan',
+            'description' => 'Program keahlian yang membekali murid dengan kompetensi instalasi, konfigurasi, dan pemeliharaan jaringan komputer.',
+        ],
+        [
+            'id' => 3,
+            'code' => 'BD',
+            'name' => 'Bisnis Digital',
+            'description' => 'Program keahlian yang membekali murid dengan kompetensi pemasaran dan pengelolaan bisnis berbasis digital.',
+        ],
+    ];
+
     public function index()
     {
-        return "Ini adalah halaman daftar jurusan";
+        $title = 'Sistem Sekolah - Daftar Jurusan';
+
+        return view('majors.index', [
+            'title' => $title,
+            'majors' => $this->majors
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return "Menampilkan halaman untuk tambah data jurusan";
+        $title = 'Sistem Sekolah - Tambah Jurusan Baru';
+
+        return view('majors.create', ['title' => $title]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        return "Melakukan penambahan data jurusan baru";
+        $request->validate([
+            'code' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+
+        return redirect()->route('majors.index')->with('success', 'Data jurusan berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        return "Menampilkan detail jurusan dengan ID : {$id}";
+        $title = 'Sistem Sekolah - Detail Jurusan';
+
+        $major = collect($this->majors)->firstWhere('id', (int) $id);
+
+        abort_if(! $major, 404, 'Data jurusan tidak ditemukan.');
+
+        return view('majors.show', [
+            'title' => $title,
+            'major' => $major
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        return "Menampilkan halaman edit jurusan";
+        $title = 'Sistem Sekolah - Ubah Data Jurusan';
+
+        $major = collect($this->majors)->firstWhere('id', (int) $id);
+
+        abort_if(! $major, 404, 'Data jurusan tidak ditemukan.');
+
+        return view('majors.edit', [
+            'title' => $title,
+            'major' => $major
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        return "Melakukan perubahan data jurusan";
+        $request->validate([
+            'code' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+
+        return redirect()->route('majors.index')->with('success', 'Data jurusan berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        return "Menghapus data jurusan";
+        return redirect()->route('majors.index')->with('success', 'Data jurusan berhasil dihapus.');
     }
 }

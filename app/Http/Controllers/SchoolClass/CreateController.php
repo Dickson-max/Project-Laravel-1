@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class CreateController
+class CreateController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function __invoke()
     {
-         return "Menampilkan halaman untuk tambah data kelas";
+        return view('classes.create', [
+            'title' => 'Sistem Sekolah - Tambah Kelas Baru'
+        ]);
     }
 }

@@ -1,77 +1,113 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use Illuminate\Http\Request;
- 
+
 class StudentController extends Controller
 {
+    private array $students = [
+        [
+            'id' => 1,
+            'nis' => '1234',
+            'name' => 'Dickson',
+            'gender' => 'Laki-laki',
+            'class' => 'XII TKJ 2',
+            'major' => 'TKJ'
+        ],
+        [
+            'id' => 2,
+            'nis' => '3456',
+            'name' => 'Aileen',
+            'gender' => 'Perempuan',
+            'class' => 'XII TKJ 1',
+            'major' => 'TKJ'
+        ],
+    ];
+
     public function index()
     {   
         $title = 'Sistem Sekolah - Daftar Siswa';
-        $students = [
-            [
-                'id' => 1,
-                'nis' => '1234',
-                'name' => 'Dickson',
-                'class' => 'XII TKJ 2',
-                'major' => 'TKJ'
-            ],
-            [
-                'id' => 2,
-                'nis' => '3456',
-                'name' => 'Aileen',
-                'class' => 'XII TKJ 1 ',
-                'major' => 'TKJ'
-            ],
-            
-        ];
+
         return view('students.index', [
             'title' => $title,
-            'students' => $students
+            'students' => $this->students
         ]);
     }
- 
+
     public function show(string $id)
     {
         $title = 'Sistem Sekolah - Detail Siswa';
         
-        return view('students.show', ['title' => $title]);
+        $student = collect($this->students)->firstWhere('id', (int) $id);
+
+        abort_if(! $student, 404, 'Data siswa tidak ditemukan.');
+
+        return view('students.show', [
+            'title' => $title,
+            'student' => $student
+        ]);
     }
- 
+
     public function create()
     {
         $title = 'Sistem Sekolah - Tambah Siswa Baru';
 
         return view('students.create', ['title' => $title]);
     }
- 
+
     public function edit(string $id)
     {
         $title = 'Sistem Sekolah - Ubah Data Siswa';
 
-        return view('students.edit', ['title' => $title]);
+        $student = collect($this->students)->firstWhere('id', (int) $id);
+
+        abort_if(! $student, 404, 'Data siswa tidak ditemukan.');
+
+        return view('students.edit', [
+            'title' => $title,
+            'student' => $student
+        ]);
     }
- 
+
     public function store(Request $request)
     {
-        $title = 'Sistem Sekolah - Catat Siswa Baru';
+        $request->validate([
+            'nis' => 'required',
+            'name' => 'required',
+            'gender' => 'required',
+            'major' => 'required',
+            'class' => 'required',
+        ]);
 
-        return "Melakukan penambahan data siswa baru";
+        // Jika sudah pakai Eloquent Model:
+        // Student::create($request->all());
+
+        return redirect()->route('students.index')->with('success', 'Data siswa berhasil ditambahkan.');
     }
- 
+
     public function update(Request $request, string $id)
     {
-        $title = 'Sistem Sekolah - Ubah Data Siswa';
+        $request->validate([
+            'nis' => 'required',
+            'name' => 'required',
+            'gender' => 'required',
+            'major' => 'required',
+            'class' => 'required',
+        ]);
 
-        return "Melakukan perubahan data siswa";
+        // Jika sudah pakai Eloquent Model:
+        // $student = Student::findOrFail($id);
+        // $student->update($request->all());
+
+        return redirect()->route('students.index')->with('success', 'Data siswa berhasil diperbarui.');
     }
- 
+
     public function destroy(string $id)
     {
-        $title = 'Sistem Sekolah - Hapus Data Siswa';
+        // Jika sudah pakai Eloquent Model:
+        // Student::destroy($id);
 
-        return "Menghapus data siswa";
+        return redirect()->route('students.index')->with('success', 'Data siswa berhasil dihapus.');
     }
 }
- 
