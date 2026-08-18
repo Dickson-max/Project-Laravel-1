@@ -21,9 +21,9 @@
                 <th class="w-14 px-5 py-3.5 font-semibold">No.</th>
                 <th class="px-5 py-3.5 font-semibold">NIP</th>
                 <th class="px-5 py-3.5 font-semibold">Nama Guru</th>
-                <th class="px-5 py-3.5 font-semibold">Gender</th>
+                <th class="px-5 py-3.5 font-semibold">Jenis Kelamin</th>
                 <th class="px-5 py-3.5 font-semibold">Mata Pelajaran</th>
-                <th class="px-5 py-3.5 font-semibold">Nomor Telepon</th>
+                <th class="px-5 py-3.5 font-semibold">No. Telepon</th>
                 <th class="px-5 py-3.5 font-semibold">Status</th>
                 <th class="px-5 py-3.5 text-right font-semibold">Tindakan</th>
             </tr>

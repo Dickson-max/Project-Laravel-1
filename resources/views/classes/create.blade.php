@@ -4,50 +4,67 @@
 
 @section('content')
 
-<a href="{{ route('classes.index') }}" class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Kembali ke Daftar Kelas</a>
+<div class="mb-8 border-b border-[#E5E3DB] pb-5">
+    <a href="{{ route('classes.index') }}" class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Daftar Kelas</a>
+    <h1 class="font-display mt-2 text-3xl font-semibold text-[#16213A]">Catat Kelas Baru</h1>
+    <p class="mt-1 text-sm text-slate-500">Isi data untuk menambah kelas baru ke dalam sistem.</p>
+</div>
 
-<div class="mt-3 border border-[#E5E3DB] bg-white p-8">
-    <div class="mb-6 border-b border-[#E5E3DB] pb-4">
-        <p class="mb-1 text-[11px] uppercase tracking-[0.2em] text-[#A16207]">Formulir Kelas</p>
-        <h1 class="font-display text-2xl font-semibold text-[#16213A]">Tambah Kelas Baru</h1>
+<form action="{{ route('classes.store') }}" method="POST" class="space-y-6 border border-[#E5E3DB] bg-white p-8">
+    @csrf
+
+    {{-- Field 1: Nama Kelas (text) --}}
+    <div>
+        <label for="name" class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Nama Kelas</label>
+        <input type="text" id="name" name="name" placeholder="Contoh: XII AKL 1" value="{{ old('name') }}"
+            class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-[#A16207] focus:bg-white focus:outline-none">
     </div>
 
-    <form action="{{ route('classes.store') }}" method="POST" class="space-y-6">
-        @csrf
+    {{-- Field 2: Tingkat (select) --}}
+    <div>
+        <label for="grade" class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Tingkat</label>
+        <select id="grade" name="grade"
+            class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+            <option value="" disabled {{ old('grade') ? '' : 'selected' }}>-- Pilih Tingkat Kelas --</option>
+            <option value="X" {{ old('grade') == 'X' ? 'selected' : '' }}>X</option>
+            <option value="XI" {{ old('grade') == 'XI' ? 'selected' : '' }}>XI</option>
+            <option value="XII" {{ old('grade') == 'XII' ? 'selected' : '' }}>XII</option>
+        </select>
+    </div>
 
-        <div>
-            <label for="name" class="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">Nama Kelas</label>
-            <input type="text" name="name" id="name" placeholder="Contoh: XII AKL 1" required
-                class="w-full border border-[#E5E3DB] p-3 text-sm focus:border-[#16213A] focus:outline-none">
-        </div>
+    {{-- Field 3: Jurusan (select) --}}
+    <div>
+        <label for="major_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Jurusan</label>
+        <select id="major_id" name="major_id"
+            class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+            <option value="" disabled {{ old('major_id') ? '' : 'selected' }}>-- Pilih Jurusan --</option>
+            @foreach ($majors as $major)
+                <option value="{{ $major['id'] }}" {{ old('major_id') == $major['id'] ? 'selected' : '' }}>
+                    {{ $major['name'] }} ({{ $major['code'] }})
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-        <div>
-            <label for="grade" class="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">Angkatan / Tingkat</label>
-            <select name="grade" id="grade" required class="w-full border border-[#E5E3DB] p-3 text-sm focus:border-[#16213A] focus:outline-none">
-                <option value="">-- Pilih Tingkat --</option>
-                <option value="X">X</option>
-                <option value="XI">XI</option>
-                <option value="XII">XII</option>
-            </select>
-        </div>
+    {{-- Field 4: Wali Kelas (select) --}}
+    <div>
+        <label for="teacher_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Wali Kelas</label>
+        <select id="teacher_id" name="teacher_id"
+            class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+            <option value="" disabled {{ old('teacher_id') ? '' : 'selected' }}>-- Pilih Wali Kelas --</option>
+            @foreach ($teachers as $teacher)
+                <option value="{{ $teacher['id'] }}" {{ old('teacher_id') == $teacher['id'] ? 'selected' : '' }}>
+                    {{ $teacher['name'] }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-        <div>
-            <label for="major" class="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">Jurusan</label>
-            <input type="text" name="major" id="major" placeholder="Contoh: AKL" required
-                class="w-full border border-[#E5E3DB] p-3 text-sm focus:border-[#16213A] focus:outline-none">
-        </div>
-
-        <div>
-            <label for="homeroom_teacher" class="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">Wali Kelas</label>
-            <input type="text" name="homeroom_teacher" id="homeroom_teacher" placeholder="Nama Wali Kelas" required
-                class="w-full border border-[#E5E3DB] p-3 text-sm focus:border-[#16213A] focus:outline-none">
-        </div>
-
-        <div class="flex justify-end gap-4 border-t border-[#E5E3DB] pt-6">
-            <a href="{{ route('classes.index') }}" class="px-5 py-2.5 text-sm font-medium text-slate-500 hover:text-[#16213A]">Batal</a>
-            <button type="submit" class="bg-[#16213A] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#26324f]">Simpan Kelas</button>
-        </div>
-    </form>
-</div>
+    <div class="flex justify-end gap-4 border-t border-[#EFEDE6] pt-6">
+        <a href="{{ route('classes.index') }}" class="px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-[#16213A]">Batal</a>
+        <button type="submit"
+            class="bg-[#16213A] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-[#26324f]">Simpan Kelas</button>
+    </div>
+</form>
 
 @endsection
