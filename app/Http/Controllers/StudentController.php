@@ -2,112 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Student\StoreRequest;
+use App\Http\Requests\Student\UpdateRequest;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
-    private array $students = [
-        [
-            'id' => 1,
-            'nis' => '1234',
-            'name' => 'Dickson',
-            'gender' => 'Laki-laki',
-            'class' => 'XII TKJ 2',
-            'major' => 'TKJ'
-        ],
-        [
-            'id' => 2,
-            'nis' => '3456',
-            'name' => 'Aileen',
-            'gender' => 'Perempuan',
-            'class' => 'XII TKJ 1',
-            'major' => 'TKJ'
-        ],
-    ];
-
     public function index()
-    {   
+    {
+
         $title = 'Sistem Sekolah - Daftar Siswa';
+
+        $students = Student::select(['id', 'nis', 'name', 'class', 'major'])
+            ->get();
 
         return view('students.index', [
             'title' => $title,
-            'students' => $this->students
+            'students' => $students,
         ]);
     }
 
-    public function show(string $id)
+    public function show(Student $student)
     {
         $title = 'Sistem Sekolah - Detail Siswa';
-        
-        $student = collect($this->students)->firstWhere('id', (int) $id);
-
-        abort_if(! $student, 404, 'Data siswa tidak ditemukan.');
 
         return view('students.show', [
             'title' => $title,
-            'student' => $student
+            'student' => $student,
         ]);
     }
 
     public function create()
     {
-        $title = 'Sistem Sekolah - Tambah Siswa Baru';
+        $title = 'Sistem Sekolah - Tambah Siswa';
 
-        return view('students.create', ['title' => $title]);
+        return view('students.create', [
+            'title' => $title,
+        ]);
     }
 
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        $title = 'Sistem Sekolah - Ubah Data Siswa';
-
-        $student = collect($this->students)->firstWhere('id', (int) $id);
-
-        abort_if(! $student, 404, 'Data siswa tidak ditemukan.');
+        $title = 'Sistem Sekolah - Edit Siswa';
 
         return view('students.edit', [
             'title' => $title,
-            'student' => $student
+            'student' => $student,
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'nis' => 'required',
-            'name' => 'required',
-            'gender' => 'required',
-            'major' => 'required',
-            'class' => 'required',
-        ]);
+        // Validasi
+        $validatedRequest = $request->validated();
 
-        // Jika sudah pakai Eloquent Model:
-        // Student::create($request->all());
+        // Tambahkan Data ke Database
+        Student::create($validatedRequest);
 
-        return redirect()->route('students.index')->with('success', 'Data siswa berhasil ditambahkan.');
+        // Handle if Success
+        return redirect()->route('students.index');
     }
 
-    public function update(Request $request, string $id)
+    public function update(Student $student, UpdateRequest $request)
     {
-        $request->validate([
-            'nis' => 'required',
-            'name' => 'required',
-            'gender' => 'required',
-            'major' => 'required',
-            'class' => 'required',
-        ]);
+        // Validasi
+        $validatedRequest = $request->validated();
 
-        // Jika sudah pakai Eloquent Model:
-        // $student = Student::findOrFail($id);
-        // $student->update($request->all());
+        // Update Data
+        $student->update($validatedRequest);
 
-        return redirect()->route('students.index')->with('success', 'Data siswa berhasil diperbarui.');
+        // Handle if Success
+        return redirect()->route('students.index');
     }
 
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        // Jika sudah pakai Eloquent Model:
-        // Student::destroy($id);
+        // Delete Data
+        $student->delete();
 
-        return redirect()->route('students.index')->with('success', 'Data siswa berhasil dihapus.');
+        // Handle if Success
+        return redirect()->route('students.index');
     }
 }
