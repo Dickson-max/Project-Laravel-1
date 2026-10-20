@@ -3,31 +3,19 @@
 namespace App\Http\Controllers\SchoolClass;
 
 use App\Http\Controllers\Controller;
+use App\Models\SchoolClass;
+use Illuminate\View\View;
 
 class IndexController extends Controller
 {
-    public function __invoke()
+    public function __invoke(): View
     {
-        $classes = [
-            [
-                'id' => 1,
-                'name' => 'XII AKL 1',
-                'grade' => 'XII',
-                'major' => 'AKL',
-                'homeroom_teacher' => 'Budi Santoso'
-            ],
-            [
-                'id' => 2,
-                'name' => 'XII TKJ 1',
-                'grade' => 'XII',
-                'major' => 'TKJ',
-                'homeroom_teacher' => 'Siti Aminah'
-            ]
-        ];
-
         return view('classes.index', [
             'title' => 'Sistem Sekolah - Daftar Kelas',
-            'classes' => $classes
+            'classes' => SchoolClass::query()
+                ->with(['major:id,code,name', 'teacher:id,name'])
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 }

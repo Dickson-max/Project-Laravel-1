@@ -2,86 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreTeacherRequest;
+use App\Http\Requests\UpdateTeacherRequest;
+use App\Models\Teacher;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class TeacherController extends Controller
 {
-    private array $teachers = [
-        [
-            'id' => 1,
-            'nip' => '198501012024',
-            'name' => 'Budi Santoso',
-            'gender' => 'Laki-Laki',
-            'subject' => 'Akuntansi Dasar',
-            'phone_number' => '081234560001',
-            'status' => 'Aktif'
-        ],
-        [
-            'id' => 2,
-            'nip' => '198703152024',
-            'name' => 'Siti Aminah',
-            'gender' => 'Perempuan',
-            'subject' => 'Jaringan Komputer',
-            'phone_number' => '081234560002',
-            'status' => 'Aktif'
-        ]
-    ];
-
-    public function index()
-    {   
-        $title = 'Sistem Sekolah - Daftar Guru';
-
+    public function index(): View
+    {
         return view('teachers.index', [
-            'title' => $title,
-            'teachers' => $this->teachers
+            'title' => 'Sistem Sekolah - Daftar Guru',
+            'teachers' => Teacher::query()->orderBy('name')->get(),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
-        $title = 'Sistem Sekolah - Tambah Guru Baru';
-
-        return view('teachers.create', ['title' => $title]);
+        return view('teachers.create', [
+            'title' => 'Sistem Sekolah - Tambah Guru Baru',
+        ]);
     }
 
-    public function show(string $id)
+    public function show(Teacher $teacher): View
     {
-        $title = 'Sistem Sekolah - Detail Guru';
-        
-        // Cari data guru berdasarkan id, ambil index pertama jika tidak ketemu
-        $teacher = collect($this->teachers)->firstWhere('id', (int) $id) ?? $this->teachers[0];
-
         return view('teachers.show', [
-            'title' => $title,
-            'teacher' => $teacher
+            'title' => 'Sistem Sekolah - Detail Guru',
+            'teacher' => $teacher,
         ]);
     }
 
-    public function edit(string $id)
+    public function edit(Teacher $teacher): View
     {
-        $title = 'Sistem Sekolah - Ubah Data Guru';
-
-        // Cari data guru berdasarkan id, ambil index pertama jika tidak ketemu
-        $teacher = collect($this->teachers)->firstWhere('id', (int) $id) ?? $this->teachers[0];
-
         return view('teachers.edit', [
-            'title' => $title,
-            'teacher' => $teacher
+            'title' => 'Sistem Sekolah - Ubah Data Guru',
+            'teacher' => $teacher,
         ]);
     }
 
-    public function store(Request $request) 
+    public function store(StoreTeacherRequest $request): RedirectResponse
     {
-        return "Melakukan penambahan data guru";
+        Teacher::create($request->validated());
+
+        return redirect()->route('teachers.index')->with('success', 'Data guru berhasil ditambahkan.');
     }
 
-    public function update(Request $request, string $id) 
+    public function update(UpdateTeacherRequest $request, Teacher $teacher): RedirectResponse
     {
-        return "Melakukan perubahan data guru";
+        $teacher->update($request->validated());
+
+        return redirect()->route('teachers.index')->with('success', 'Data guru berhasil diperbarui.');
     }
 
-    public function destroy(string $id) 
+    public function destroy(Teacher $teacher): RedirectResponse
     {
-        return "Menghapus data guru";
+        if ($teacher->schoolClasses()->exists()) {
+            return redirect()->route('teachers.index')
+                ->with('error', 'Guru tidak dapat dihapus karena masih menjadi wali kelas.');
+        }
+
+        $teacher->delete();
+
+        return redirect()->route('teachers.index')->with('success', 'Data guru berhasil dihapus.');
     }
 }

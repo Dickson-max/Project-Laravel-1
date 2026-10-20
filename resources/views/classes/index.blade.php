@@ -4,6 +4,13 @@
 
 @section('content')
 
+@if (session('success'))
+    <div class="mb-4 border-l-4 border-[#16213A] bg-[#FCFBF8] p-4 text-sm text-[#16213A] shadow-sm">{{ session('success') }}</div>
+@endif
+@if (session('error'))
+    <div class="mb-4 border-l-4 border-red-600 bg-red-50 p-4 text-sm text-red-700 shadow-sm">{{ session('error') }}</div>
+@endif
+
 <div class="mb-8 flex items-end justify-between border-b border-[#E5E3DB] pb-5">
     <div>
         <p class="mb-1 text-[11px] uppercase tracking-[0.2em] text-[#A16207]">Tahun Ajaran 2025/2026</p>
@@ -27,28 +34,28 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($classes as $class)
+            @forelse ($classes as $class)
             <tr class="border-b border-[#EFEDE6] hover:bg-[#FAF9F5]">
                 <td class="px-5 py-4 font-display text-lg text-[#A16207]">
                     {{ $loop->iteration }}
                 </td>
                 <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                    {{ $class['name'] }}
+                    {{ $class->name }}
                 </td>
                 <td class="px-5 py-4 font-medium text-[#16213A]">
-                    {{ $class['grade'] }}
+                    {{ $class->grade ?? '-' }}
                 </td>
                 <td class="px-5 py-4">
-                    {{ $class['major'] }}
+                    {{ $class->major?->name ?? '-' }}
                 </td>
                 <td class="px-5 py-4">
-                    {{ $class['homeroom_teacher'] }}
+                    {{ $class->teacher?->name ?? '-' }}
                 </td>
                 <td class="px-5 py-4">
                     <div class="flex justify-end gap-4 text-xs font-medium">
-                        <a href="{{ route('classes.show', ['id' => $class['id']]) }}" class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
-                        <a href="{{ route('classes.edit', ['id' => $class['id']]) }}" class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
-                        <form action="{{ route('classes.destroy', ['id' => $class['id']]) }}" method="POST"
+                        <a href="{{ route('classes.show', $class) }}" class="text-[#16213A] hover:text-[#A16207]">Lihat</a>
+                        <a href="{{ route('classes.edit', $class) }}" class="text-[#16213A] hover:text-[#A16207]">Ubah</a>
+                        <form action="{{ route('classes.destroy', $class) }}" method="POST"
                             onsubmit="return confirm('Hapus data kelas ini?')">
                             @csrf
                             @method('DELETE')
@@ -57,7 +64,11 @@
                     </div>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" class="px-5 py-8 text-center text-slate-500">Belum ada data kelas.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

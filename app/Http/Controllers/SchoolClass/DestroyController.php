@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\SchoolClass;
+use Illuminate\Http\RedirectResponse;
 
-class DestroyController
+class DestroyController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request, string $id)
+    public function __invoke(SchoolClass $schoolClass): RedirectResponse
     {
-        return "Menghapus data kelas";
+        if ($schoolClass->students()->exists()) {
+            return redirect()->route('classes.index')
+                ->with('error', 'Kelas tidak dapat dihapus karena masih memiliki siswa.');
+        }
+
+        $schoolClass->delete();
+
+        return redirect()->route('classes.index')->with('success', 'Data kelas berhasil dihapus.');
     }
 }

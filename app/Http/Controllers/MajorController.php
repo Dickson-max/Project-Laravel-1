@@ -2,49 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreMajorRequest;
+use App\Http\Requests\UpdateMajorRequest;
+use App\Models\Major;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class MajorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        $title = 'Sistem Sekolah - Daftar Jurusan';
-        $majors = [
-            [
-                'id' => 1,
-                'code' => 'AKL',
-                'name' => 'Akuntansi dan Keuangan Lembaga',
-                'description' => 'Program keahlian yang membekali murid dengan kompetensi pencatatan dan pelaporan keuangan.',
-            ],
-            [
-                'id' => 2,
-                'code' => 'TKJ',
-                'name' => 'Teknik Komputer dan Jaringan',
-                'description' => 'Program keahlian yang membekali murid dengan kompetensi instalasi, konfigurasi, dan pemeliharaan jaringan komputer.',
-            ],
-            [
-                'id' => 3,
-                'code' => 'BD',
-                'name' => 'Bisnis Digital',
-                'description' => 'Program keahlian yang membekali murid dengan kompetensi pemasaran dan pengelolaan bisnis berbasis digital.',
-            ],
-
-        ];
-
         return view('majors.index', [
-            'title' => $title,
-            'majors' => $majors,
+            'title' => 'Sistem Sekolah - Daftar Jurusan',
+            'majors' => Major::query()->orderBy('code')->get(),
         ]);
-
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $title = 'Sistem Sekolah - Tambah Jurusan';
 
@@ -56,48 +36,61 @@ class MajorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMajorRequest $request): RedirectResponse
     {
-        return 'Melakukan penambahan data jurusan ';
+        Major::create($request->validated());
+
+        return redirect()->route('majors.index')->with('success', 'Jurusan berhasil ditambahkan.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Major $major): View
     {
         $title = 'Sistem Sekolah - Detail Jurusan';
 
         return view('majors.show', [
             'title' => $title,
+            'major' => $major,
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit()
+    public function edit(Major $major): View
     {
         $title = 'Sistem Sekolah - Edit Jurusan';
 
         return view('majors.edit', [
             'title' => $title,
+            'major' => $major,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(UpdateMajorRequest $request, Major $major): RedirectResponse
     {
-        return 'Melakukan perubahan data jurusan ';
+        $major->update($request->validated());
+
+        return redirect()->route('majors.index')->with('success', 'Jurusan berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy()
+    public function destroy(Major $major): RedirectResponse
     {
-        return 'Menghapus data jurusan';
+        if ($major->students()->exists() || $major->schoolClasses()->exists()) {
+            return redirect()->route('majors.index')
+                ->with('error', 'Jurusan tidak dapat dihapus karena masih digunakan oleh siswa atau kelas.');
+        }
+
+        $major->delete();
+
+        return redirect()->route('majors.index')->with('success', 'Jurusan berhasil dihapus.');
     }
 }

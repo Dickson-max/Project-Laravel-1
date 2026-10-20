@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\SchoolClass;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSchoolClassRequest;
+use App\Models\SchoolClass;
+use Illuminate\Http\RedirectResponse;
 
-class StoreController
+class StoreController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function __invoke(StoreSchoolClassRequest $request): RedirectResponse
     {
-        return "Melakukan penambahan data kelas baru";
+        SchoolClass::create($request->validated());
+
+        return redirect()->route('classes.index')->with('success', 'Data kelas berhasil ditambahkan.');
     }
 }

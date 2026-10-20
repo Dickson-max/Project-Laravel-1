@@ -3,27 +3,18 @@
 namespace App\Http\Controllers\SchoolClass;
 
 use App\Http\Controllers\Controller;
+use App\Models\Major;
+use App\Models\Teacher;
+use Illuminate\View\View;
 
 class CreateController extends Controller
 {
-    public function __invoke()
+    public function __invoke(): View
     {
-        $majors = [
-            ['id' => 1, 'code' => 'AKL', 'name' => 'Akuntansi dan Keuangan Lembaga'],
-            ['id' => 2, 'code' => 'TKJ', 'name' => 'Teknik Komputer dan Jaringan'],
-            ['id' => 3, 'code' => 'BD',  'name' => 'Bisnis Digital'],
-        ];
-
-        $teachers = [
-            ['id' => 1, 'name' => 'Budi Santoso, S.Pd.'],
-            ['id' => 2, 'name' => 'Siti Aminah, M.Pd.'],
-            ['id' => 3, 'name' => 'Rahmat Hidayat, S.T.'],
-        ];
-
         return view('classes.create', [
-            'title'    => 'Sistem Sekolah - Tambah Kelas Baru',
-            'majors'   => $majors,
-            'teachers' => $teachers,
+            'title' => 'Sistem Sekolah - Tambah Kelas Baru',
+            'majors' => Major::query()->orderBy('code')->get(['id', 'code', 'name']),
+            'teachers' => Teacher::query()->orderBy('name')->get(['id', 'name']),
         ]);
     }
 }

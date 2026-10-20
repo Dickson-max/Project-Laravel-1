@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateSchoolClassRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return $this->user()?->role === 'teacher';
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, array<mixed>>
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255', Rule::unique('classes', 'name')->ignore($this->route('schoolClass'))],
+            'grade' => ['required', Rule::in(['X', 'XI', 'XII'])],
+            'major_id' => ['nullable', 'integer', 'exists:majors,id'],
+            'teacher_id' => ['nullable', 'integer', 'exists:teachers,id'],
+        ];
+    }
+}

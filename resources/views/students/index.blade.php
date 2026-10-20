@@ -16,6 +16,63 @@
         </a>
     </div>
 
+    <form method="GET" action="{{ route('students.index') }}" class="mb-6 flex flex-wrap items-end gap-3 border border-[#E5E3DB] bg-white p-5">
+
+        <div class="min-w-55 flex-1">
+
+            <label for="search" class="mb-1 block text-[11px] uppercase tracking-[0.15em] text-[#16213A]">Cari</label>
+
+            <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Nama atau NIS siswa"
+                class="w-full border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
+
+        </div>
+
+
+
+        <div>
+
+            <label for="class" class="mb-1 block text-[11px] uppercase tracking-[0.15em] text-[#16213A]">Kelas</label>
+
+            <select name="class_id" id="class"
+                class="border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
+
+                <option value="">Semua Kelas</option>
+                @foreach ($schoolClasses as $schoolClass)
+                    <option @selected(request('class_id') == $schoolClass->id) value="{{ $schoolClass->id }}">{{ $schoolClass->name }}</option>
+                @endforeach
+
+            </select>
+
+        </div>
+
+
+
+        <div>
+
+            <label for="major" class="mb-1 block text-[11px] uppercase tracking-[0.15em] text-[#16213A]">Jurusan</label>
+
+            <select name="major_id" id="major"
+                class="border border-[#E5E3DB] px-3 py-2 text-sm focus:border-[#16213A] focus:outline-none">
+
+                <option value="">Semua Jurusan</option>
+                @foreach ($majors as $major)
+                    <option @selected(request('major_id') == $major->id) value="{{ $major->id }}">{{ $major->name }}</option>
+                @endforeach
+
+            </select>
+
+        </div>
+
+
+
+        <button type="submit" class="bg-[#16213A] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#26324f]">
+
+            Terapkan
+
+        </button>
+
+    </form>
+
     <div class="border border-[#E5E3DB] bg-white">
         <table class="w-full text-left text-sm">
             <thead>
@@ -41,10 +98,10 @@
                             {{ $student->name }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $student->class }}
+                            {{ $student->schoolClass?->name ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
-                            {{ $student->major }}
+                            {{ $student->major?->name ?? '-' }}
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-4 text-xs font-medium">
@@ -73,6 +130,10 @@
 
             </tbody>
         </table>
+
+    </div>
+    <div class="mt-6">
+        {{ $students->links() }}
     </div>
 
 @endsection

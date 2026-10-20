@@ -26,8 +26,8 @@ class StoreRequest extends FormRequest
             'nis' => ['required', 'string', 'size:4', 'unique:students,nis'],
             'name' => ['required', 'string'],
             'gender' => ['required', 'string', 'in:Laki-laki,Perempuan'],
-            'major' => ['required', 'string', 'in:AKL,TKJ,BiD'],
-            'class' => ['required', 'string'],
+            'major_id' => ['required', 'integer', 'exists:majors,id'],
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
         ];
     }
 }

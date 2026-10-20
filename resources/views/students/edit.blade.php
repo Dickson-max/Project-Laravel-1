@@ -18,7 +18,7 @@
             @method('PUT')
             <div>
                 <label for="nis"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">NIS</label>
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">NIS</label>
                 <input type="text" id="nis" name="nis" value="{{ old('nis', $student->nis) }}"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
                     @error('nis')
@@ -28,7 +28,7 @@
 
             <div>
                 <label for="name"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Nama
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Nama
                     Lengkap</label>
                 <input type="text" id="name" name="name" value="{{ old('name', $student->name) }}"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
@@ -39,7 +39,7 @@
 
             <div>
                 <label for="gender"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Jenis
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Jenis
                     Kelamin</label>
                 <select id="gender" name="gender"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
@@ -52,24 +52,33 @@
             </div>
 
             <div>
-                <label for="major"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Jurusan</label>
-                <select id="major" name="major"
+                <label for="major_id"
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Jurusan</label>
+                <select id="major_id" name="major_id"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
-                    <option value="AKL" @selected(old('major', $student->major) == 'AKL')>AKL</option>
-                    <option value="TKJ" @selected(old('major', $student->major) == 'TKJ')>TKJ</option>
-                    <option value="BiD" @selected(old('major', $student->major) == 'BiD')>BiD</option>
+                    <option value="">Pilih jurusan</option>
+                    @foreach ($majors as $major)
+                        <option @selected(old('major_id', $student->major_id) == $major->id) value="{{ $major->id }}">{{ $major->name }}</option>
+                    @endforeach
                 </select>
-                @error('major')
+                @error('major_id')
                     <span class="text-red-500 py-2"> {{ $message }} </span>
                 @enderror
             </div>
 
             <div>
-                <label for="class"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Kelas</label>
-                <input type="text" id="class" name="class" value="{{ old('class', $student->class) }}"
+                <label for="class_id"
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Kelas</label>
+                <select id="class_id" name="class_id"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+                    <option value="">Pilih kelas</option>
+                    @foreach ($schoolClasses as $schoolClass)
+                        <option @selected(old('class_id', $student->class_id) == $schoolClass->id) value="{{ $schoolClass->id }}">{{ $schoolClass->name }}</option>
+                    @endforeach
+                </select>
+                @error('class_id')
+                    <span class="text-red-500 py-2"> {{ $message }} </span>
+                @enderror
             </div>
 
             <div class="flex justify-end gap-4 border-t border-[#EFEDE6] pt-6">

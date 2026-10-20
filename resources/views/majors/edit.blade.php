@@ -4,35 +4,38 @@
 
 @section('content')
 <div class="mb-8 border-b border-[#E5E3DB] pb-5">
-            <a href="#" class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Buku
-                Induk</a>
+            <a href="{{ route('majors.index') }}" class="text-xs uppercase tracking-[0.15em] text-slate-400 hover:text-[#A16207]">&larr; Daftar Jurusan</a>
             <h1 class="font-display mt-2 text-3xl font-semibold text-[#16213A]">Ubah Data Jurusan</h1>
             <p class="mt-1 text-sm text-slate-500">Memperbarui catatan atas jurusan <span
-                    class="font-medium text-[#16213A]">AKL</span>.</p>
+                    class="font-medium text-[#16213A]">{{ $major->name }}</span>.</p>
         </div>
 
-        <form action="" method="POST" class="space-y-6 border border-[#E5E3DB] bg-white p-8">
+        <form action="{{ route('majors.update', $major) }}" method="POST" class="space-y-6 border border-[#E5E3DB] bg-white p-8">
+            @csrf
+            @method('PUT')
             <div>
                 <label for="code"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Kode Jurusan</label>
-                <input type="text" id="code" name="code" value="AKL"
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Kode Jurusan</label>
+                <input type="text" id="code" name="code" value="{{ old('code', $major->code) }}"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+                @error('code')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div>
                 <label for="name"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Nama
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Nama
                     Jurusan</label>
-                <input type="text" id="name" name="name" value="Akuntansi dan Keuangan Lembaga"
+                <input type="text" id="name" name="name" value="{{ old('name', $major->name) }}"
                     class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">
+                @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div>
                 <label for="description"
-                    class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[#16213A]">Deskripsi</label>
+                    class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#16213A]">Deskripsi</label>
                 <textarea id="description" name="description" rows="4"
-                    class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">Program keahlian yang membekali murid dengan kompetensi pencatatan dan pelaporan keuangan.</textarea>
-            </div>
+                    class="w-full border border-[#D9D6CD] bg-[#FCFBF8] px-3.5 py-2.5 text-sm focus:border-[#A16207] focus:bg-white focus:outline-none">{{ old('description', $major->description) }}</textarea>
+                @error('description')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
 
